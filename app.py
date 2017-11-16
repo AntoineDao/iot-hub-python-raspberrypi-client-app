@@ -16,6 +16,9 @@ from Adafruit_BME280 import *
 import re
 from telemetry import Telemetry
 
+from envirophat import light, weather, motion, analog
+
+
 # HTTP options
 # Because it can poll "after 9 seconds" polls will happen effectively
 # at ~10 seconds.
@@ -74,7 +77,7 @@ if not is_correct_connection_string():
     telemetry.send_telemetry_data(None, EVENT_FAILED, "Device connection string is not correct.")
     sys.exit(0)
 
-MSG_TXT = "{\"deviceId\": \"Raspberry Pi - Python\",\"temperature\": %f,\"humidity\": %f}"
+MSG_TXT = "{\"deviceId\": \"Raspberry Pi - Python\",\"temperature\": %f,\"pressure\": %f,\"light\": %f,\"red_light\": %f,\"green_light\": %f,\"blue_light\": %f,\"motion\": %f}"
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(config.GPIO_PIN_ADDRESS, GPIO.OUT)
@@ -203,11 +206,24 @@ def iothub_client_sample_run():
             if MESSAGE_SWITCH:
                 # send a few messages every minute
                 print ( "IoTHubClient sending %d messages" % MESSAGE_COUNT )
-                temperature = sensor.read_temperature()
-                humidity = sensor.read_humidity()
+                t = round(weather.temperature(),2)
+                p = round(weather.pressure(),2)
+                c = light.light()
+                rgb = light.rgb()
+                r = rgb[0]
+                g = rgb[1]
+                b = rgb[2]
+                h = motion.heading()
+                #temperature = #sensor.read_temperature()
+                #humidity = sensor.read_humidity()
                 msg_txt_formatted = MSG_TXT % (
-                    temperature,
-                    humidity)
+                    t,
+                    p,
+                    c,
+                    r,
+                    g,
+                    b,
+                    h)
                 print (msg_txt_formatted)
                 message = IoTHubMessage(msg_txt_formatted)
                 # optional: assign ids

@@ -25,7 +25,7 @@ from envirophat import light, weather, motion, analog
 # Note that for scalabilty, the default value of minimumPollingTime
 # is 25 minutes. For more information, see:
 # https://azure.microsoft.com/documentation/articles/iot-hub-devguide/#messaging
-TIMEOUT = 241000
+TIMEOUT = 3700000
 MINIMUM_POLLING_TIME = 9
 
 # messageTimeout - the maximum time in milliseconds until a message times out.
@@ -239,7 +239,7 @@ def iothub_client_sample_run():
                 status = client.get_send_status()
                 print ( "Send status: %s" % status )
                 MESSAGE_COUNT += 1
-            time.sleep(config.MESSAGE_TIMESPAN / 1000.0)
+            time.sleep(config.MESSAGE_TIMESPAN / 12)
 
     except IoTHubError as iothub_error:
         print ( "Unexpected error %s from IoTHub" % iothub_error )
